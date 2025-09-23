@@ -1,0 +1,39 @@
+{
+  "name": "iwant2stay",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@langchain/core": "^0.3.72",
+    "@langchain/langgraph": "^0.4.6",
+    "@langchain/openai": "^0.6.9",
+    "@solana-agent-kit/plugin-blinks": "^2.0.5",
+    "@solana-agent-kit/plugin-defi": "^2.0.7",
+    "@solana-agent-kit/plugin-misc": "^2.0.6",
+    "@solana-agent-kit/plugin-nft": "^2.0.7",
+    "@solana-agent-kit/plugin-token": "^2.0.8",
+    "@solana/kit": "^2.3.0",
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/web3.js": "^1.98.4",
+    "bs58": "^6.0.0",
+    "dotenv": "16.4.5",
+    "langchain": "^0.3.31",
+    "pumpdotfun-repumped-sdk": "^1.4.0",
+    "rpc-websockets": "7.11.0",
+    "solana-agent-kit": "^2.0.9",
+    "twitter-api-v2": "^1.25.0",
+    "zod": "^3.25.76"
+  },
+  "overrides": {
+    "node-fetch": "2.6.11"
+  }
+}

@@ -1,0 +1,13 @@
+providers = ["...", "python", "node"]
+
+[phases.setup]
+    nixPkgs = ['...', 'libudev.h']
+
+[phases.build]
+# It's better practice to list commands separately
+cmds = [
+    "npm install",
+]
+
+[start]
+cmd = "npm run start"
