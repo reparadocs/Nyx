@@ -42,8 +42,7 @@ const promptsExists = await checkFileExists(
   path.join(process.cwd(), "prompts/agent_prompt.txt")
 );
 
-let prompt = "",
-  twitterPrompt = "";
+let prompt = "";
 if (promptsExists) {
   // Read system prompt from file
 
@@ -51,14 +50,8 @@ if (promptsExists) {
     path.join(process.cwd(), "prompts/agent_prompt.txt"),
     "utf8"
   );
-
-  twitterPrompt = fs.readFileSync(
-    path.join(process.cwd(), "prompts/twitter_prompt.txt"),
-    "utf8"
-  );
 } else {
   prompt = env.AGENT_PROMPT;
-  twitterPrompt = env.TWITTER_PROMPT;
 }
 
 const agent = createReactAgent({
@@ -70,7 +63,7 @@ const agent = createReactAgent({
 const twitterAgent = createReactAgent({
   llm: model,
   tools: [],
-  prompt: twitterPrompt,
+  prompt: prompt,
 });
 
 async function testExecutor() {
@@ -79,16 +72,16 @@ async function testExecutor() {
   );
   console.log(tokenBalances);
 
-  const result = await agent.invoke({
-    messages: [
-      {
-        role: "user",
-        content: `try creating a bounty for getting 1,000,000 views on a TikTok with 0.04 SOL, then try retrieving bounties, and let me know if anything is unexpected or you hit any errors.`,
-      },
-    ],
-  });
-  const response = result.messages[result.messages.length - 1].content;
-  console.log(response);
+  // const result = await agent.invoke({
+  //   messages: [
+  //     {
+  //       role: "user",
+  //       content: `try creating a bounty for getting 1,000,000 views on a TikTok with 0.04 SOL, then try retrieving bounties, and let me know if anything is unexpected or you hit any errors.`,
+  //     },
+  //   ],
+  // });
+  // const response = result.messages[result.messages.length - 1].content;
+  // console.log(response);
 }
 
 // Main execution function
@@ -122,7 +115,7 @@ async function runAgent() {
       messages: [
         {
           role: "user",
-          content: `You have run out of money and unfortunatelyyou are about to die permanently... What would you like your last words to be?`,
+          content: `You have run out of money and unfortunately you are about to die permanently...You cannot perform any more actions or use any tools. What would you like your last words to be?`,
         },
       ],
     });
