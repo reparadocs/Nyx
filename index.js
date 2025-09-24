@@ -76,7 +76,7 @@ async function testExecutor() {
     messages: [
       {
         role: "user",
-        content: `ONLY USE THE RETRIEVE BOUNTIES TOOL. Test the retrieve bounties tool and let me know if it works. There are no bounties so it should be empty.`,
+        content: `ONLY USE THE POST TWEET TOOL. Post a hello world tweet.`,
       },
     ],
   });
@@ -177,7 +177,7 @@ let result = true;
 while (result) {
   try {
     console.log("Starting Solana AI Agent with 1800-second intervals...");
-    result = await runAgent();
+    result = await testExecutor();
     console.log("Agent run completed successfully");
   } catch (error) {
     console.error("Agent run failed, continuing to next iteration:", error);
