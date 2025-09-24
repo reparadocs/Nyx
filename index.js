@@ -177,8 +177,7 @@ let result = true;
 while (result) {
   try {
     console.log("Starting Solana AI Agent with 1800-second intervals...");
-    result = await testExecutor();
-    //test the post tweet tool
+    result = await runAgent();
     console.log("Agent run completed successfully");
   } catch (error) {
     console.error("Agent run failed, continuing to next iteration:", error);

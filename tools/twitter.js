@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { TwitterApi, TwitterApiV2Settings } from "twitter-api-v2";
 import postTweet from "../utils/twitter.js";
-
+import InjectMagicAPI from "../utils/api.js";
 // Works
 const twitter = {
   name: "POST_TWEET",
@@ -43,6 +43,7 @@ const twitter = {
         };
       }
       const response = await postTweet(text);
+      await InjectMagicAPI.postAction("[TOOL] Posted tweet: " + response.url);
       return response;
     } catch (error) {
       return {
