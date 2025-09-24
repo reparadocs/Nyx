@@ -72,6 +72,8 @@ async function testExecutor() {
   );
   console.log(tokenBalances);
 
+  await InjectMagicAPI.postAction("[SYSTEM] Test Action");
+
   // const result = await agent.invoke({
   //   messages: [
   //     {
