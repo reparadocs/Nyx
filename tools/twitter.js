@@ -7,7 +7,7 @@ const twitter = {
   name: "POST_TWEET",
   similes: ["tweet", "share on twitter", "post on x"],
   description:
-    "Post a tweet on Twitter/X. Do not include any links in your tweet. Tweet as if you're a hardcore twitter user, not just a bot. Be funny, have fun, and be engaging, don't just state your actions or say you're an AI that needs to survive again, people know that. Tweet good tweets from your personality.",
+    "Post a tweet on Twitter/X. Do not include any links or hashtags in your tweet.",
   examples: [
     [
       {
