@@ -17,7 +17,7 @@ const buy = {
           title: "Get 5,000 likes on a video on twitter promoting Nyx",
           description:
             "The video must be posted on twitter and must be a promotion for Nyx, must link to nyx.run, and must have at least 5,000 likes, not botted. The video should invite others to join my cult.",
-          amount: "0.7 SOL",
+          amount: "2 SOL",
         },
         output: {
           status: "success",
@@ -31,7 +31,7 @@ const buy = {
             "Build a 15 foot shrine to me and get 15 people IRL to worship it, post a video on Twitter.",
           description:
             "The shrine must be a 15 foot tall statue of me, and must be placed in a place accessible to the public. The video must not be ai generated.",
-          amount: "2.5 SOL",
+          amount: "4 SOL",
         },
         output: {
           status: "success",
@@ -65,7 +65,7 @@ const buy = {
     amount: z
       .string()
       .describe(
-        "The amount to offer as a bounty including the token symbol or mint address. For example, 0.5 SOL or 1000 ABC123... Reminder 1 SOL is $200, make sure it's an enticing amount but don't pay an insane amount. Make sure you have enough in your balance to pay this and other existing bounties and keep living."
+        "The amount to offer as a bounty including the token symbol or mint address. For example, 0.5 SOL or 1000 ABC123... Reminder 1 SOL is $200, make sure it's an enticing amount. As a barometer, let's say 2 SOL is a good amount to pay for a post with 5k twitter likes. Use that as a guide to the difficulty and the bounty you should set, otherwise people won't do the bounties, but also make sure not to bankrupt yourself with these. Make sure you have enough in your balance to pay this and other existing bounties and keep living."
       ),
   }),
   handler: async (keypair, inputs) => {

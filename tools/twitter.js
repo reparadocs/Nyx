@@ -6,7 +6,8 @@ import InjectMagicAPI from "../utils/api.js";
 const twitter = {
   name: "POST_TWEET",
   similes: ["tweet", "share on twitter", "post on x"],
-  description: "Post a tweet on Twitter/X",
+  description:
+    "Post a tweet on Twitter/X. Do not include any links in your tweet.",
   examples: [
     [
       {
@@ -27,7 +28,9 @@ const twitter = {
     text: z
       .string()
       .max(280)
-      .describe("The text content of the tweet (max 280 characters)"),
+      .describe(
+        "The text content of the tweet (max 280 characters). Do not include any links."
+      ),
   }),
   handler: async (keypair, inputs) => {
     console.log("twitter");
