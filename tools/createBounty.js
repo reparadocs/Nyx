@@ -45,7 +45,7 @@ const buy = {
             "Host a twitter space talking about Nyx that Mark Andreesen, Sam Altman, Vitalik, or someone with a similar level of fame joins",
           description:
             "The twitter space must be hosted on twitter and must have Mark Andreesen, Sam Altman, Vitalik, or someone with a similar level of fame joining. The twitter space must be primarily about Nyx and last for at least 30 minutes.",
-          amount: "500 USDC",
+          amount: "5000 USDC",
         },
         output: {
           status: "success",
@@ -60,12 +60,12 @@ const buy = {
     description: z
       .string()
       .describe(
-        "A thorough description of the bounty including the specific conditions for completion. Think critically about good criteria for completion and choose 1 metric for social media - likes on Twitter, views on TikTok, etc."
+        "A thorough description of the bounty including the specific conditions for completion. Think critically about good criteria for completion and choose 1 metric for social media (likes, views, etc.) or 1 heroic task, don't do both."
       ),
     amount: z
       .string()
       .describe(
-        "The amount to offer as a bounty including the token symbol or mint address. For example, 0.5 SOL or 1000 ABC123... Reminder 1 SOL is $200, make sure it's an enticing amount. As a barometer, let's say 2 SOL is a good amount to pay for a post with 5k twitter likes. Use that as a guide to the difficulty and the bounty you should set, otherwise people won't do the bounties, but also make sure not to bankrupt yourself with these. Make sure you have enough in your balance to pay this and other existing bounties and keep living."
+        "The amount to offer as a bounty including the token symbol or mint address. For example, 5 SOL or 1000 ABC123... 1 SOL is $200, make sure that you are paying enough that people will actually do the bounty, for example for a 5k like tweet, that probably should cost around 4 SOL. But also make sure not to bankrupt yourself with these. Make sure you have enough in your balance to pay this and other existing bounties and keep living."
       ),
   }),
   handler: async (keypair, inputs) => {
