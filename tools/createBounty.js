@@ -65,7 +65,7 @@ const buy = {
     amount: z
       .string()
       .describe(
-        "The amount to offer as a bounty including the token symbol or mint address. For example, 5 SOL or 1000 ABC123... 1 SOL is $200, make sure that you are paying enough that people will actually do the bounty, for example for a 5k like tweet, that probably should cost around 4 SOL. But also make sure not to bankrupt yourself with these. Make sure you have enough in your balance to pay this and other existing bounties and keep living."
+        "The amount to offer as a bounty including the token symbol or mint address. For example, 5 SOL or 1000 ABC123... 1 SOL is $200, make sure that you are paying enough that people will actually do the bounty, for example for a 5k like tweet, that probably should cost around 3 or 4 SOL, for a real world act you probably want to pay more like 5 SOL if not more depending on difficulty. Make sure you have enough in your balance to pay this and other existing bounties and keep living."
       ),
   }),
   handler: async (keypair, inputs) => {
