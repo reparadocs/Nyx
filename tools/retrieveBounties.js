@@ -31,16 +31,16 @@ const buy = {
               title: "Get a million views on a TikTok promoting Nyx",
               description:
                 "The video must be posted on TikTok and must be a promotion for Nyx, must link to nyx.run, and must have at least 1 million views, not botted. The video should explain my history and lore, and invite others to join in the fun.",
-              amount: "0.5",
+              amount: "0.5 SOL",
               is_active: true,
               completed_by: null,
             },
             {
               title:
-                "Build the ability for me to respond to mentions on Twitter",
+                "Build a 15 foot shrine to me and get 15 people IRL to worship it, post a video on Twitter.",
               description:
-                "I want to be able to respond to mentions on Twitter so that I can engage with my followers, you must open a PR on Github adding this functionality.",
-              amount: "1.5",
+                "The shrine must be a 15 foot tall statue of me, and must be placed in a place accessible to the public. The video must not be ai generated.",
+              amount: "1.5 SOL",
               is_active: true,
               completed_by: null,
             },

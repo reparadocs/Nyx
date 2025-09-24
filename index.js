@@ -72,18 +72,16 @@ async function testExecutor() {
   );
   console.log(tokenBalances);
 
-  await InjectMagicAPI.postAction("[SYSTEM] Test Action");
-
-  // const result = await agent.invoke({
-  //   messages: [
-  //     {
-  //       role: "user",
-  //       content: `try creating a bounty for getting 1,000,000 views on a TikTok with 0.04 SOL, then try retrieving bounties, and let me know if anything is unexpected or you hit any errors.`,
-  //     },
-  //   ],
-  // });
-  // const response = result.messages[result.messages.length - 1].content;
-  // console.log(response);
+  const result = await agent.invoke({
+    messages: [
+      {
+        role: "user",
+        content: `ONLY USE THE RETRIEVE BOUNTIES TOOL. Test the retrieve bounties tool and let me know if it works. There are no bounties so it should be empty.`,
+      },
+    ],
+  });
+  const response = result.messages[result.messages.length - 1].content;
+  console.log(response);
 }
 
 // Main execution function
@@ -179,7 +177,7 @@ let result = true;
 while (result) {
   try {
     console.log("Starting Solana AI Agent with 1800-second intervals...");
-    result = await testExecutor();
+    result = await runAgent();
     console.log("Agent run completed successfully");
   } catch (error) {
     console.error("Agent run failed, continuing to next iteration:", error);
