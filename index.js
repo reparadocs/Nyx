@@ -153,7 +153,9 @@ async function runAgent() {
 
   const userMessage = `Balances: <Balances>${JSON.stringify(
     tokenBalances
-  )}</Balances> Bounties: <Bounties>${bounties}</Bounties> Current memory is within the memory tags: <Memory>${memory}</Memory>. You have recently been given some feedback from your audience: <Feedback>${feedback}</Feedback> The time is ${new Date().toISOString()} Take your next actions and then in your response, briefly describe what actions you took and why. Then say anything else you'd like to your audience.`;
+  )}</Balances> Bounties: <Bounties>${JSON.stringify(
+    bounties
+  )}</Bounties> Current memory is within the memory tags: <Memory>${memory}</Memory>. You have recently been given some feedback from your audience: <Feedback>${feedback}</Feedback> The time is ${new Date().toISOString()} Take your next actions and then in your response, briefly describe what actions you took and why. Then say anything else you'd like to your audience.`;
 
   console.log(userMessage);
 
