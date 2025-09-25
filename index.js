@@ -179,21 +179,24 @@ async function getFeedback() {
   try {
     console.log("Checking Twitter logs for feedback...");
     const logs = await InjectMagicAPI.getTwitterLogs();
-    let noLogs = false;
+    let shouldPost = false;
 
     if (!logs || logs.length === 0) {
-      noLogs = true;
+      shouldPost = true;
+    } else {
+      // Get the most recent log
+      const lastLog = logs[logs.length - 1];
+      const lastLogDate = new Date(lastLog.datetime);
+      const now = new Date();
+      const hoursSinceLastTweet = (now - lastLogDate) / (1000 * 60 * 60);
+
+      console.log(`Last tweet was ${hoursSinceLastTweet.toFixed(2)} hours ago`);
+      if (hoursSinceLastTweet >= 24) {
+        shouldPost = true;
+      }
     }
 
-    // Get the most recent log
-    const lastLog = logs[logs.length - 1];
-    const lastLogDate = new Date(lastLog.datetime);
-    const now = new Date();
-    const hoursSinceLastTweet = (now - lastLogDate) / (1000 * 60 * 60);
-
-    console.log(`Last tweet was ${hoursSinceLastTweet.toFixed(2)} hours ago`);
-
-    if (hoursSinceLastTweet >= 24 || noLogs) {
+    if (shouldPost) {
       console.log(
         "Last tweet was over 24 hours ago, posting new feedback tweet..."
       );
@@ -225,9 +228,6 @@ async function getFeedback() {
     }
   } catch (error) {
     console.error("Error in getFeedback function:", error);
-    await InjectMagicAPI.postAction(
-      "[ERROR] Failed to post feedback tweet: " + error.message
-    );
     return false;
   }
 }
