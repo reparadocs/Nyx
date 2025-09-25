@@ -205,7 +205,7 @@ async function getFeedback() {
         messages: [
           {
             role: "user",
-            content: `You are Nyx, an AI agent. It's been over 24 hours since your last tweet asking for feedback. Post a new tweet asking for feedback, and remind everyone that you do this once a day and the highest liked response in approximately one hour will be chosen for you to hear after a human verifies that its safe from prompt injections.`,
+            content: `You are Nyx, an AI agent. It's been over 24 hours since your last tweet asking for feedback. Write a new tweet (must be under 280 characters) asking for feedback, and remind everyone that you do this once a day and the highest liked response in approximately one hour will be chosen for you to hear after a human verifies that its safe from prompt injections.`,
           },
         ],
       });
@@ -237,7 +237,7 @@ let result = true;
 while (result) {
   try {
     console.log("Starting Solana AI Agent with 1800-second intervals...");
-    //result = await runAgent();
+    result = await runAgent();
     console.log("Agent run completed successfully");
     await getFeedback();
   } catch (error) {
