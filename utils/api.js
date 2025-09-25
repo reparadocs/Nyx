@@ -229,6 +229,24 @@ class InjectMagicAPI {
     return arr;
   }
 
+  async deleteBounty(id) {
+    const response = await fetch(
+      `https://api.injectmagic.com/sisyphus/bounties/${id}/`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${this.apiKey}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Inject Magic API error: ${response.status}`);
+    }
+    const bounty = await response.json();
+    return bounty;
+  }
+
   async createBounty(title, description, amount) {
     return this.post("bounties/", { title, description, amount });
   }

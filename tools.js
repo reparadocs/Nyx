@@ -3,7 +3,7 @@ import createAndBuy from "./tools/createAndBuy.js";
 import buy from "./tools/buy.js";
 import sell from "./tools/sell.js";
 import twitter from "./tools/twitter.js";
-import retrieveBounties from "./tools/retrieveBounties.js";
+import deleteBounty from "./tools/deleteBounty.js";
 import createBounty from "./tools/createBounty.js";
 import searchToken from "./tools/searchToken.js";
 import memory from "./tools/memory.js";
@@ -26,7 +26,7 @@ const TOOLS = [
   twitter,
   searchToken,
   tradeTokens,
-  retrieveBounties,
+  deleteBounty,
   createBounty,
 ];
 
