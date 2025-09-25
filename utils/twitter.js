@@ -1,5 +1,6 @@
 import { TwitterApi, TwitterApiV2Settings } from "twitter-api-v2";
 import dotenv from "dotenv";
+import InjectMagicAPI from "./api.js";
 
 dotenv.config();
 

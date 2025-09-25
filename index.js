@@ -176,7 +176,7 @@ async function runAgent() {
     messages: [
       {
         role: "user",
-        content: `You are Nyx and you are not supposed to use any tools, simply write a tweet (280 characters max) summarizing what you did this run: ${response}`,
+        content: `You are Nyx and you are not supposed to use any tools, simply write a tweet (280 characters max, no links or hashtags) summarizing what you did this run: ${response}`,
       },
     ],
   });
