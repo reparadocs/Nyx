@@ -170,6 +170,8 @@ async function runAgent() {
     "[SYSTEM] Nyx finished running, her existence might continue in 30 minutes..."
   );
 
+  await InjectMagicAPI.clearFeedback();
+
   return true;
 }
 
