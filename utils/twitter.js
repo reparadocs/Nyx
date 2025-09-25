@@ -55,6 +55,20 @@ class Twitter {
     }
   }
 
+  async postTweetAndAction(text) {
+    try {
+      const tweet = await this.postTweet(text);
+      await InjectMagicAPI.postAction("[TOOL] Posted tweet: " + tweet.url);
+      return tweet;
+    } catch (error) {
+      console.error(`Failed to post tweet: ${error.message}`);
+      return {
+        status: "error",
+        message: `Failed to post tweet: ${error.message}`,
+      };
+    }
+  }
+
   async getLastTweets() {
     try {
       const timeline = await this.client.v2.userTimeline(this.userId, {

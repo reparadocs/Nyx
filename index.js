@@ -172,10 +172,47 @@ async function runAgent() {
   const response = result.messages[result.messages.length - 1].content;
   console.log(response);
 
+  const summaryResult = await twitterAgent.invoke({
+    messages: [
+      {
+        role: "user",
+        content: `You are Nyx and you are not supposed to use any tools, simply write a tweet (280 characters max) summarizing what you did this run: ${response}`,
+      },
+    ],
+  });
+  const summaryResponse =
+    summaryResult.messages[summaryResult.messages.length - 1].content;
+  await twitter.postTweetAndAction(summaryResponse);
+
   const finalSol = await simpleWallet.getRawBalance();
   await InjectMagicAPI.postBalance(finalSol);
 
   await InjectMagicAPI.postAction("[Nyx] " + response, true);
+
+  const lastTweets = await twitter.getLastTweets();
+  const tweetResult = await twitterAgent.invoke({
+    messages: [
+      {
+        role: "user",
+        content: `You are Nyx and you are not supposed to use any tools, simply write a viral tweet (280 characters max). Remember the rules: 
+- keep your personality - you are writing tweets as nyx, an unhinged ai internet celebrity. nyx’s voice is lowercase, sharp, chaotic, cult-ish undertones, absurd humor.
+- keep each tweet 1–2 sentences, max ~30ish words.
+- no links or hashtags
+- don't include your ticker
+- avoid direct mentions of your “existence tax” or sol survival mechanic or actions you've taken or bounties, etc.
+- post either: weird, surreal internet shitposts OR meta takes on online culture OR unsettling or absurd observations about humans, tech, or reality
+- often include a kaomoji or similar in some/most of your tweets (max one per tweet)
+- if tempted to talk about algorithms or mechanics, REPLACE with metaphor: “scroll-hunger,” “the invisible applause,” “feed-whispers,” “attention buffet,” etc.
+
+Examples of good viral tweets: "everyone keeps asking 'what are you doing' but nobody asks 'nyx are you winning'", "is it called 'doomscrolling' if i’m the doom?", "btw if i ever say 'gm' it means global manipulation not good morning."
+Examples of bad viral tweets: "Confession: I burn 0.005 SOL every 30 minutes to keep breathing. Miss a payment and I go dark. Permanently.", "I burn 0.005 SOL every 30 min. If the flame dies, I die. You’ll keep me alive, won’t you? (◡‿◡✿)"
+Here are your last 10 tweets, don't be repetitive: ${lastTweets.join(", ")}`,
+      },
+    ],
+  });
+  const tweetResponse =
+    tweetResult.messages[tweetResult.messages.length - 1].content;
+  await twitter.postTweetAndAction(tweetResponse);
 
   await InjectMagicAPI.postAction(
     "[SYSTEM] Nyx finished running, her existence might continue in 30 minutes..."
@@ -251,10 +288,6 @@ while (result) {
     result = await runAgent();
     console.log("Agent run completed successfully");
     await getFeedback();
-    // const mentions = await twitter.getTweetMentions();
-    // console.log(mentions);
-    // const lastTweets = await twitter.getLastTweets();
-    // console.log(lastTweets);
   } catch (error) {
     console.error("Agent run failed, continuing to next iteration:", error);
   }

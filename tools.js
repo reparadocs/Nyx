@@ -23,7 +23,7 @@ const TOOLS = [
   buy,
   sell,
   memory,
-  twitter,
+  //twitter,
   searchToken,
   tradeTokens,
   deleteBounty,
