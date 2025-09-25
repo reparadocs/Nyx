@@ -229,6 +229,28 @@ class InjectMagicAPI {
     return arr;
   }
 
+  async logTwitterReply(tweetId) {
+    return this.post("twitter-logs/", { log: tweetId });
+  }
+
+  async getTwitterLogs() {
+    const response = await fetch(
+      "https://api.injectmagic.com/sisyphus/twitter-logs/",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${this.apiKey}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Inject Magic API error: ${response.status}`);
+    }
+    const arr = await response.json();
+    const logs = arr.map((log) => log.log);
+    return logs;
+  }
+
   async deleteBounty(id) {
     const response = await fetch(
       `https://api.injectmagic.com/sisyphus/bounties/${id}/`,

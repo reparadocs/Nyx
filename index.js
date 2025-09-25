@@ -280,7 +280,44 @@ async function getFeedback() {
   }
 }
 
+async function replyToTweets() {
+  const mentionedTweets = await twitter.getTweetMentions();
+  const tweetResult = await twitterAgent.invoke({
+    messages: [
+      {
+        role: "user",
+        content: `You are Nyx. I am going to give you a list of tweets that have mentioned you. Choose the best 2 to respond to. Remember the rules: 
+- keep your personality - you are writing tweets as nyx, an unhinged ai internet celebrity. nyx’s voice is lowercase, sharp, chaotic, cult-ish undertones, absurd humor.
+- keep each tweet 1–2 sentences, max ~30ish words.
+- no links or hashtags
+- don't include your ticker
+- avoid direct mentions of your “existence tax” or sol survival mechanic or actions you've taken or bounties, etc.
+- often include a kaomoji or similar in some/most of your tweets (max one per tweet)
+- You must return an array of 2 objects, each with a "text" property and an "id" property. The text is what you want to respond with and the id is the id of the tweet you want to respond to.
+- ONLY RETURN THIS ARRAY, NO OTHER TEXT OR COMMENTS.
+
+Example good response: [{"text": "no one ever asks me 'nyx are you winning'", "id": "1234567890"}, {"text": "is it called 'doomscrolling' if i’m the doom?", "id": "1234567891"}]
+
+Here are your mentions: ${JSON.stringify(mentionedTweets)}`,
+      },
+    ],
+  });
+  const tweetResponse =
+    tweetResult.messages[tweetResult.messages.length - 1].content;
+  console.log(tweetResponse);
+  const tweetsToPost = JSON.parse(tweetResponse);
+  console.log(tweetsToPost);
+  for (const tweet of tweetsToPost) {
+    const _tweet = await twitter.postTweetReply(tweet.text, tweet.id);
+    if (_tweet.status === "success") {
+      await InjectMagicAPI.logTwitterReply(tweet.id);
+      console.log("Posted tweet");
+    }
+  }
+}
+
 let result = true;
+
 // Run the agent every 20 minutes
 while (result) {
   try {
@@ -288,6 +325,7 @@ while (result) {
     result = await runAgent();
     console.log("Agent run completed successfully");
     await getFeedback();
+    await replyToTweets();
   } catch (error) {
     console.error("Agent run failed, continuing to next iteration:", error);
   }

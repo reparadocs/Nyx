@@ -56,6 +56,42 @@ class Twitter {
     }
   }
 
+  async postTweetReply(text, tweetId) {
+    try {
+      // Validate tweet length
+      if (text.length > 280) {
+        return {
+          status: "error",
+          message: "Tweet text exceeds 280 character limit.",
+        };
+      }
+
+      // Post the tweet
+      const tweet = await this.client.v2.reply(text, tweetId);
+
+      if (tweet.data && tweet.data.id) {
+        return {
+          status: "success",
+          tweetId: tweet.data.id,
+          text: text,
+          url: `https://x.com/NyxPosts/status/${tweet.data.id}`,
+          timestamp: new Date().toISOString(),
+        };
+      } else {
+        return {
+          status: "error",
+          message: `Invalid response from Twitter API`,
+        };
+      }
+    } catch (error) {
+      console.error(`Failed to post tweet: ${error.message}`);
+      return {
+        status: "error",
+        message: `Failed to post tweet`,
+      };
+    }
+  }
+
   async postTweetAndAction(text) {
     try {
       const tweet = await this.postTweet(text);
@@ -83,8 +119,18 @@ class Twitter {
   }
 
   async getTweetMentions() {
-    const mentions = await this.client.v2.userMentionTimeline(this.userId, {});
-    console.log(mentions.tweets);
+    try {
+      const logs = await InjectMagicAPI.getTwitterLogs();
+      const timeline = await this.client.v2.userMentionTimeline(this.userId, {
+        max_results: 50,
+      });
+      return timeline.tweets
+        .filter((tweet) => !logs.includes(tweet.id))
+        .map((tweet) => ({ text: tweet.text, id: tweet.id }));
+    } catch (error) {
+      console.error(`Failed to get timeline: ${error.message}`);
+      return [];
+    }
   }
 }
 
