@@ -237,7 +237,7 @@ let result = true;
 while (result) {
   try {
     console.log("Starting Solana AI Agent with 1800-second intervals...");
-    result = await runAgent();
+    //result = await runAgent();
     console.log("Agent run completed successfully");
     await getFeedback();
   } catch (error) {
