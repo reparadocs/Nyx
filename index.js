@@ -13,7 +13,7 @@ import { SolanaAgentKit, KeypairWallet } from "solana-agent-kit";
 import TokenPlugin from "@solana-agent-kit/plugin-token";
 import InjectMagicAPI from "./utils/api.js";
 import SimpleWallet from "./utils/wallet.js";
-import postTweet from "./utils/twitter.js";
+import twitter from "./utils/twitter.js";
 
 const env = process.env;
 
@@ -123,7 +123,7 @@ async function runAgent() {
     console.log(tweetResult);
     const tweetResponse =
       tweetResult.messages[tweetResult.messages.length - 1].content;
-    const tweet = await postTweet(tweetResponse);
+    const tweet = await twitter.postTweet(tweetResponse);
     await InjectMagicAPI.postAction("[Nyx] " + tweetResponse);
     if (tweet.status === "success") {
       console.log("Posted tweet");
@@ -147,6 +147,7 @@ async function runAgent() {
   const bounties = bountyResponse.map((bounty) => ({
     title: bounty.title,
     description: bounty.description,
+    id: bounty.id,
     amount: bounty.amount,
     is_active: bounty.is_active,
   }));
@@ -222,7 +223,7 @@ async function getFeedback() {
 
       const tweetResponse =
         tweetResult.messages[tweetResult.messages.length - 1].content;
-      const tweet = await postTweet(tweetResponse);
+      const tweet = await twitter.postTweet(tweetResponse);
 
       if (tweet.status === "success") {
         console.log("Posted feedback tweet:", tweet.url);
@@ -250,6 +251,10 @@ while (result) {
     result = await runAgent();
     console.log("Agent run completed successfully");
     await getFeedback();
+    // const mentions = await twitter.getTweetMentions();
+    // console.log(mentions);
+    // const lastTweets = await twitter.getLastTweets();
+    // console.log(lastTweets);
   } catch (error) {
     console.error("Agent run failed, continuing to next iteration:", error);
   }
