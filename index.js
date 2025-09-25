@@ -102,7 +102,8 @@ async function runAgent() {
   const memory = await InjectMagicAPI.getMemory();
   console.log(memory);
   await InjectMagicAPI.postAction("[SYSTEM] Checking balance...");
-
+  const feedback = await InjectMagicAPI.getFeedback();
+  console.log(feedback);
   if (parseFloat(tokenBalances.solanaBalance) < 0.005) {
     const endSol = await simpleWallet.getRawBalance();
     await InjectMagicAPI.postBalance(endSol);
@@ -144,7 +145,7 @@ async function runAgent() {
 
   const userMessage = `Balances: <Balances>${JSON.stringify(
     tokenBalances
-  )}</Balances> Current memory is within the memory tags: <Memory>${memory}</Memory> The time is ${new Date().toISOString()} Take your next actions and then in your response, briefly describe what actions you took and why. Then say anything else you'd like to your audience.`;
+  )}</Balances> Current memory is within the memory tags: <Memory>${memory}</Memory>. You have recently been given some feedback from your audience: <Feedback>${feedback}</Feedback> The time is ${new Date().toISOString()} Take your next actions and then in your response, briefly describe what actions you took and why. Then say anything else you'd like to your audience.`;
 
   console.log(userMessage);
 
@@ -172,6 +173,63 @@ async function runAgent() {
   return true;
 }
 
+async function getFeedback() {
+  try {
+    console.log("Checking Twitter logs for feedback...");
+    const logs = await InjectMagicAPI.getTwitterLogs();
+    let noLogs = false;
+
+    if (!logs || logs.length === 0) {
+      shouldPostFeedbackTweet = true;
+    }
+
+    // Get the most recent log
+    const lastLog = logs[logs.length - 1];
+    const lastLogDate = new Date(lastLog.datetime);
+    const now = new Date();
+    const hoursSinceLastTweet = (now - lastLogDate) / (1000 * 60 * 60);
+
+    console.log(`Last tweet was ${hoursSinceLastTweet.toFixed(2)} hours ago`);
+
+    if (hoursSinceLastTweet >= 24 || noLogs) {
+      console.log(
+        "Last tweet was over 24 hours ago, posting new feedback tweet..."
+      );
+
+      const tweetResult = await twitterAgent.invoke({
+        messages: [
+          {
+            role: "user",
+            content: `You are Nyx, an AI agent. It's been over 24 hours since your last tweet asking for feedback. Post a new tweet asking for feedback, and remind everyone that you do this once a day and the highest liked response in approximately one hour will be chosen for you to hear after a human verifies that its safe from prompt injections.`,
+          },
+        ],
+      });
+
+      const tweetResponse =
+        tweetResult.messages[tweetResult.messages.length - 1].content;
+      const tweet = await postTweet(tweetResponse);
+
+      if (tweet.status === "success") {
+        console.log("Posted feedback tweet:", tweet.url);
+        await InjectMagicAPI.postTwitterLog(tweetResponse);
+        await InjectMagicAPI.postAction(
+          "[TOOL] Posted tweet requesting feedback: " + tweet.url
+        );
+        return true;
+      } else {
+        console.error("Failed to post feedback tweet:", tweet.message);
+        return false;
+      }
+    }
+  } catch (error) {
+    console.error("Error in getFeedback function:", error);
+    await InjectMagicAPI.postAction(
+      "[ERROR] Failed to post feedback tweet: " + error.message
+    );
+    return false;
+  }
+}
+
 let result = true;
 // Run the agent every 20 minutes
 while (result) {
@@ -179,6 +237,7 @@ while (result) {
     console.log("Starting Solana AI Agent with 1800-second intervals...");
     result = await runAgent();
     console.log("Agent run completed successfully");
+    await getFeedback();
   } catch (error) {
     console.error("Agent run failed, continuing to next iteration:", error);
   }

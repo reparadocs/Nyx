@@ -130,6 +130,28 @@ class InjectMagicAPI {
     return memory;
   }
 
+  async getFeedback() {
+    const response = await fetch(
+      "https://api.injectmagic.com/sisyphus/feedback/",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${this.apiKey}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Inject Magic API error: ${response.status}`);
+    }
+    const arr = await response.json();
+    const feedback = arr.feedback;
+    return feedback;
+  }
+
+  async clearFeedback() {
+    return this.post("feedback/", { feedback: "" });
+  }
+
   async postBalance(balance) {
     return this.post("balance/", { balance });
   }
