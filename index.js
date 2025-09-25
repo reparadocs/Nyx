@@ -182,7 +182,7 @@ async function getFeedback() {
     let noLogs = false;
 
     if (!logs || logs.length === 0) {
-      shouldPostFeedbackTweet = true;
+      noLogs = true;
     }
 
     // Get the most recent log
