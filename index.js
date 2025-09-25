@@ -311,6 +311,9 @@ Here are your mentions: ${JSON.stringify(mentionedTweets)}`,
     const _tweet = await twitter.postTweetReply(tweet.text, tweet.id);
     if (_tweet.status === "success") {
       await InjectMagicAPI.logTwitterReply(tweet.id);
+      await InjectMagicAPI.postAction(
+        "[TOOL] Posted tweet reply: " + _tweet.url
+      );
       console.log("Posted tweet");
     }
   }

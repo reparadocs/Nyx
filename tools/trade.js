@@ -114,7 +114,7 @@ const tradeTokens = {
 
       const executeData = await executeResponse.json();
       console.log(executeData);
-      if (executeData.status === "success") {
+      if (executeData.status === "Success") {
         const finalSol = await wallet.getBalance();
         // Return the results in the expected format
         actionMessage +=
@@ -133,7 +133,7 @@ const tradeTokens = {
           outputAmount: executeData.outputAmountResult,
         };
       }
-      return executeData;
+      return { status: "error", message: executeData };
     } catch (error) {
       actionMessage += "failed";
       await InjectMagicAPI.postAction(actionMessage);
