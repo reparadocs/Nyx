@@ -304,7 +304,7 @@ while (result) {
     result = await runAgent();
     console.log("Agent run completed successfully");
     //await getFeedback();
-    await replyToTweets();
+    //await replyToTweets();
   } catch (error) {
     console.error("Agent run failed, continuing to next iteration:", error);
   }
