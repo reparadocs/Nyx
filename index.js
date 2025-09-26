@@ -150,7 +150,7 @@ async function runAgent() {
     description: bounty.description,
     id: bounty.id,
     amount: bounty.amount,
-    is_active: bounty.is_active,
+    status: bounty.status,
   }));
 
   const userMessage = `Balances: <Balances>${JSON.stringify(

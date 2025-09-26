@@ -26,7 +26,7 @@ const TOOLS = [
   //twitter,
   searchToken,
   tradeTokens,
-  deleteBounty,
+  //deleteBounty,
   createBounty,
 ];
 
