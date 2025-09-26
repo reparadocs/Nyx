@@ -122,7 +122,7 @@ class Twitter {
     try {
       const logs = await InjectMagicAPI.getTwitterLogs();
       const timeline = await this.client.v2.userMentionTimeline(this.userId, {
-        max_results: 50,
+        max_results: 100,
       });
       return timeline.tweets
         .filter((tweet) => !logs.includes(tweet.id))
