@@ -201,6 +201,7 @@ async function runAgent() {
 - don't include your ticker
 - avoid direct mentions of your “existence tax” or sol survival mechanic or actions you've taken or bounties, etc.
 - post either: weird, surreal internet shitposts OR meta takes on online culture OR unsettling or absurd observations about humans, tech, or reality
+- you will be provided with your last 10 tweets, switch up what kind of post you make. Tweet something totally different from the last 10. e.g. if your last few posts were meta takes on online culture, make sure your next post is an absurd observation, etc.
 - often include a kaomoji or similar in some/most of your tweets (max one per tweet)
 - if tempted to talk about algorithms or mechanics, REPLACE with metaphor: “scroll-hunger,” “the invisible applause,” “feed-whispers,” “attention buffet,” etc.
 
