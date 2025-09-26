@@ -5,6 +5,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import bs58 from "bs58";
+import pfs from "fs/promises";
 import fs from "fs";
 import path from "path";
 import generateTools from "./tools.js";
@@ -19,7 +20,7 @@ const env = process.env;
 
 async function checkFileExists(filePath) {
   try {
-    await fs.access(filePath, fs.constants.F_OK); // F_OK checks for existence
+    await pfs.access(filePath, fs.constants.F_OK); // F_OK checks for existence
     return true; // File exists
   } catch (error) {
     return false; // File does not exist or other error
@@ -226,54 +227,29 @@ Here are your last 10 tweets, don't be repetitive: ${lastTweets.join(", ")}`,
 
 async function getFeedback() {
   try {
-    console.log("Checking Twitter logs for feedback...");
-    const logs = await InjectMagicAPI.getTwitterLogs();
-    let shouldPost = false;
+    const tweetResult = await twitterAgent.invoke({
+      messages: [
+        {
+          role: "user",
+          content: `You are Nyx, an AI agent. no hashtags. It's been over 24 hours since your last tweet asking for feedback. Write a new tweet (must be under 280 characters) asking for feedback, and remind everyone that you do this once a day and the highest liked response in approximately one hour will be chosen for you to hear after a human verifies that its safe from prompt injections.`,
+        },
+      ],
+    });
 
-    if (!logs || logs.length === 0) {
-      shouldPost = true;
-    } else {
-      // Get the most recent log
-      const lastLog = logs[logs.length - 1];
-      const lastLogDate = new Date(lastLog.datetime);
-      const now = new Date();
-      const hoursSinceLastTweet = (now - lastLogDate) / (1000 * 60 * 60);
+    const tweetResponse =
+      tweetResult.messages[tweetResult.messages.length - 1].content;
+    const tweet = await twitter.postTweet(tweetResponse);
 
-      console.log(`Last tweet was ${hoursSinceLastTweet.toFixed(2)} hours ago`);
-      if (hoursSinceLastTweet >= 24) {
-        shouldPost = true;
-      }
-    }
-
-    if (shouldPost) {
-      console.log(
-        "Last tweet was over 24 hours ago, posting new feedback tweet..."
+    if (tweet.status === "success") {
+      console.log("Posted feedback tweet:", tweet.url);
+      await InjectMagicAPI.postTwitterLog(tweetResponse);
+      await InjectMagicAPI.postAction(
+        "[TOOL] Posted tweet requesting feedback: " + tweet.url
       );
-
-      const tweetResult = await twitterAgent.invoke({
-        messages: [
-          {
-            role: "user",
-            content: `You are Nyx, an AI agent. It's been over 24 hours since your last tweet asking for feedback. Write a new tweet (must be under 280 characters) asking for feedback, and remind everyone that you do this once a day and the highest liked response in approximately one hour will be chosen for you to hear after a human verifies that its safe from prompt injections.`,
-          },
-        ],
-      });
-
-      const tweetResponse =
-        tweetResult.messages[tweetResult.messages.length - 1].content;
-      const tweet = await twitter.postTweet(tweetResponse);
-
-      if (tweet.status === "success") {
-        console.log("Posted feedback tweet:", tweet.url);
-        await InjectMagicAPI.postTwitterLog(tweetResponse);
-        await InjectMagicAPI.postAction(
-          "[TOOL] Posted tweet requesting feedback: " + tweet.url
-        );
-        return true;
-      } else {
-        console.error("Failed to post feedback tweet:", tweet.message);
-        return false;
-      }
+      return true;
+    } else {
+      console.error("Failed to post feedback tweet:", tweet.message);
+      return false;
     }
   } catch (error) {
     console.error("Error in getFeedback function:", error);
@@ -327,7 +303,7 @@ while (result) {
     console.log("Starting Solana AI Agent with 1800-second intervals...");
     result = await runAgent();
     console.log("Agent run completed successfully");
-    await getFeedback();
+    //await getFeedback();
     await replyToTweets();
   } catch (error) {
     console.error("Agent run failed, continuing to next iteration:", error);
