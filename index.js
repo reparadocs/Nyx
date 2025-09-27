@@ -183,7 +183,7 @@ async function runAgent() {
   });
   const summaryResponse =
     summaryResult.messages[summaryResult.messages.length - 1].content;
-  await twitter.postTweetAndAction(summaryResponse);
+  //await twitter.postTweetAndAction(summaryResponse);
 
   const finalSol = await simpleWallet.getRawBalance();
   await InjectMagicAPI.postBalance(finalSol);
