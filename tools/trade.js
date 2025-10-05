@@ -73,7 +73,7 @@ const tradeTokens = {
 
         // Get the first 5 search results
         const token = data[0];
-        const decimals = token.decimals ? token.decimals : 6;
+        const decimals = token?.decimals ? token.decimals : 6;
         amountToSend = (
           parseFloat(inputAmount) * Math.pow(10, decimals)
         ).toString();
