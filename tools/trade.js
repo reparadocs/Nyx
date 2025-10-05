@@ -36,11 +36,7 @@ const tradeTokens = {
     outputMint: z
       .string()
       .describe("The token mint address of the token you want to swap to"),
-    inputAmount: z
-      .string()
-      .describe(
-        "The amount of the input token to swap (in SOL for SOL, or raw units for other tokens). Many tokens including USDC and NYX have 6 decimals so 1000000 raw units is 1 USDC, 1 raw unit is 0.000001 USDC. This input takes raw units unless it is SOL"
-      ),
+    inputAmount: z.string().describe("The amount of the input token to swap"),
   }),
   handler: async (keypair, inputs) => {
     console.log("trading");
@@ -56,6 +52,31 @@ const tradeTokens = {
       if (inputMint === "So11111111111111111111111111111111111111112") {
         // Convert SOL to lamports
         amountToSend = (parseFloat(inputAmount) * 1e9).toString();
+      } else {
+        const response = await fetch(
+          `https://api.jup.ag/ultra/v1/search?query=${encodeURIComponent(
+            inputMint
+          )}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": process.env.JUPITER_API_KEY || "",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Jupiter API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Get the first 5 search results
+        const token = data[0];
+        const decimals = token.decimals ? token.decimals : 6;
+        amountToSend = (
+          parseFloat(inputAmount) * Math.pow(10, decimals)
+        ).toString();
       }
       console.log(amountToSend);
       // Step 1: Generate order using Jupiter API
