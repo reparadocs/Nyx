@@ -17,6 +17,7 @@ import {
 } from "solana-agent-kit";
 import TokenPlugin from "@solana-agent-kit/plugin-token";
 import InjectMagicAPI from "./utils/api.js";
+import generateMeme from "./tools/generateMeme.js";
 
 const TOOLS = [
   //balances,
@@ -25,6 +26,7 @@ const TOOLS = [
   //sell,
   //memory,
   twitter,
+  generateMeme,
   searchToken,
   webSearch,
   tradeTokens,

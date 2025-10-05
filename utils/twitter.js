@@ -133,6 +133,37 @@ class Twitter {
     }
   }
 
+  async postTweetWithMedia(text, pngBuffer) {
+    try {
+      const twitterMedia = await this.client.v1.uploadMedia(pngBuffer, {
+        type: "png",
+      });
+      const tweet = await this.client.v2.tweet({
+        text,
+        media: { media_ids: [twitterMedia] },
+      });
+      if (tweet.data && tweet.data.id) {
+        return {
+          status: "success",
+          tweetId: tweet.data.id,
+          url: `https://x.com/NyxPosts/status/${tweet.data.id}`,
+          timestamp: new Date().toISOString(),
+        };
+      } else {
+        return {
+          status: "error",
+          message: `Invalid response from Twitter API`,
+        };
+      }
+    } catch (error) {
+      console.error(`Failed to post tweet: ${error.message}`);
+      return {
+        status: "error",
+        message: `Failed to post tweet`,
+      };
+    }
+  }
+
   async getTweetMentions() {
     try {
       const logs = await InjectMagicAPI.getTwitterLogs();

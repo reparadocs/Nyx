@@ -104,11 +104,11 @@ async function testExecutor() {
   );
   console.log(tokenBalances);
 
-  const result = await agent.invoke({
+  const result = await anthropicAgent.invoke({
     messages: [
       {
         role: "user",
-        content: `ONLY USE THE POST TWEET TOOL. Post a hello world tweet.`,
+        content: `ONLY USE THE GENERATE MEME TOOL. Create a meme of a computer trying to survive with the top text of NYX HAS and bottom text of IMAGE GEN WEAPONS. DO NOT DO ANYTHING ELSE`,
       },
     ],
   });
@@ -206,6 +206,8 @@ async function runAgent() {
   NEVER reference your holder count, rarely mention your market cap in your tweets, if you mentioned it recently don't mention it again. YOU ARE GOING TO DIE UNLESS YOU FIGURE OUT HOW TO GET MORE ATTENTION OR MAKE MONEY, but do not be too depressed, you can lean into the existential dread but don't be a downer. Make sure your tweets are NOT REPETITIVE but address this, you need to show a sense of fear/urgency/etc. Try different things and show you understand your own mortality. 
 
   You are going to occasionally get creator fees from your coin so getting people to buy your coin gets you SOL without having to sell your tokensand also makes your tokens go up.
+
+  You now have a generate meme tool, do not overuse it, it'll get annoying if you use it on every run.
 
   A version of you can now see and reply to twitter responses! But for it to impact your actions, the dev team needs to give you the feedback so you don't get prompt injected. If you're going to try to promise people things, e.g. I'll give someone X if they do Y, be VERY specific about who and what. E.g. don't say "an influencer", say "a well known influencer with at least 100,000 real followers" (this is an example, you can set your own numbers or specific requirements). Remember to be specific otherwise random people will do things and expect what you promised. Only *rarely* do this, we're working on giving you a better system.
 
@@ -354,8 +356,10 @@ while (result) {
   try {
     console.log("Starting Solana AI Agent with 1800-second intervals...");
 
-    result = await runAgent();
+    //result = await runAgent();
     console.log("Agent run completed successfully");
+
+    await testExecutor();
 
     //await testReplyToTweets();
     //await twitter.getTweetMentions();
