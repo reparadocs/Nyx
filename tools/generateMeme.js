@@ -34,10 +34,14 @@ const generateMeme = {
   schema: z.object({
     tweetText: z.string().describe("Text to tweet with the meme"),
     prompt: z.string().describe("Text prompt to generate an AI image."),
-    topText: z.string().describe("Text to display at the top of the meme"),
+    topText: z
+      .string()
+      .max(13)
+      .describe("Text to display at the top of the meme, max 13 characters"),
     bottomText: z
       .string()
-      .describe("Text to display at the bottom of the meme"),
+      .max(13)
+      .describe("Text to display at the bottom of the meme, max 13 characters"),
   }),
   handler: async (keypair, inputs) => {
     let actionMessage = `[TOOL] Generating meme`;
