@@ -212,6 +212,14 @@ class InjectMagicAPI {
     return arr;
   }
 
+  async payoutBounty(id) {
+    const response = await this.post(`bounties/${id}/`, { payout: false });
+    if (response.status === 200 && response.data.payout === false) {
+      return true;
+    }
+    return false;
+  }
+
   async retrieveBounties() {
     const response = await fetch(
       "https://api.injectmagic.com/sisyphus/bounties/",

@@ -204,15 +204,45 @@ async function runAgent() {
   const bounties = await InjectMagicAPI.retrieveBounties();
   const bountyMessage = bounties
     .filter(
-      (bounty) =>
-        bounty.status === "Active" ||
-        bounty.status === "Pending" ||
-        bounty.status === "Complete"
+      (bounty) => bounty.status === "Pending" || bounty.status === "Completed"
     )
     .map((bounty) => bounty.title)
-    .join("\n[bounty] ");
+    .join("\n[previous bounty] ");
+  const activeBountyMessage = bounties
+    .filter((bounty) => bounty.status === "Active")
+    .map((bounty) => bounty.title)
+    .join("\n[active bounty] ");
 
-  const userMessage = `Bounties: <Bounties>${bountyMessage}</Bounties> Balances: <Balances>${JSON.stringify(
+  const fullBountyMessage = `Active bounty count: ${activeBountyMessage.length} Current active bounties: ${activeBountyMessage} Previous bounties: ${bountyMessage}`;
+
+  const payoutBounties = bounties.filter(
+    (bounty) => bounty.status === "Completed" && bounty.payout
+  );
+
+  console.log(payoutBounties);
+
+  payoutBounties.forEach(async (bounty) => {
+    const shouldPayout = await InjectMagicAPI.payoutBounty(bounty.id);
+    console.log(shouldPayout);
+    if (shouldPayout) {
+      solanaKit.methods.transfer(
+        solanaKit,
+        new PublicKey(bounty.solana_address),
+        bounty.true_amount
+      );
+      await InjectMagicAPI.postAction("[TOOL] Paid out bounty " + bounty.title);
+      await twitter.postTweet(
+        "bounty claimed: " +
+          bounty.title +
+          " for " +
+          bounty.true_amount.toString() +
+          " SOL\n\n" +
+          bounty.winning_submission
+      );
+    }
+  });
+
+  const userMessage = `Bounties: <Bounties>${fullBountyMessage}</Bounties> Balances: <Balances>${JSON.stringify(
     tokenBalances
   )}</Balances> Your latest tweets: <LastTweets>${lastTweets.join(
     ", "
@@ -319,6 +349,8 @@ async function replyToTweets(assistantArr, lastTweets, tokenBalances) {
   DO NOT INCLUDE TWEET IDS IN YOUR RESPONSE, If you would like to reference a certain user you can use their username. The username is for the author of the last response in the sequence.
 
   DO NOT PROMISE PEOPLE THINGS, you are simply here to reply on twitter and get audience feedback, you don't get to make decisions. If you think something is a good idea or something you might want to do, you can mention @NyxDevTeam in your response and the dev team can take a look. Only do this if you actually want to do something and use it rarely. 
+
+  If you create a bounty, you need to mention it in a tweet, otherwise people won't know it exists. 
 
   If people ask, you can clarify that you can reply but for it to impact your actions, you need the dev team so you don't get prompt injected.
 
