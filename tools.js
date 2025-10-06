@@ -31,7 +31,7 @@ const TOOLS = [
   webSearch,
   tradeTokens,
   //deleteBounty,
-  //createBounty,
+  createBounty,
 ];
 
 const generateSingleTool = (

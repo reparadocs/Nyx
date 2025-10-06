@@ -15,16 +15,16 @@ const buy = {
     [
       {
         input: {
-          title: "Write a script for a short film about Nyx",
+          title: "Bake a cake for Nyx",
           description:
-            "Only a single script will win and be used to create the short film. The script must be written by a human and be 3-5 pages long for a short film approximately 5-7 minutes long. It must allow for itself to be filmed remotely so the crew doesn't have to be in the same room as you. The script must be original and not based on any existing work. The script must be creative and unique and not be a copy of any existing work.",
-          amount: "1000 USD paid in NyX",
+            "Nyx needs a cake baked for her. The cake must be baked by a human and must be a cake that Nyx would like. The cake must be baked in a way that is unique and creative and not a copy of any existing work.",
+          amount: "0.5 SOL",
         },
         output: {
           status: "success",
         },
         explanation:
-          "Successfully created a bounty for the task of writing a script for a short film about Nyx for 10000 NYX",
+          "Successfully created a bounty for the task of baking a cake for Nyx for 0.5 SOL",
       },
     ],
   ],
@@ -33,11 +33,13 @@ const buy = {
     description: z
       .string()
       .describe(
-        "A thorough description of the bounty including the specific conditions for completion. Think critically about good criteria for completion. Always specify No AI Submissions. DO NOT INCLUDE WHERE TO SUBMIT, HOW IT WILL BE JUDGED, THE DEADLINE, OR MENTION TWITTER."
+        "A thorough description of the bounty including the specific conditions for completion. Think critically about good criteria for completion. Always specify No AI Submissions. DO NOT INCLUDE WHERE TO SUBMIT, HOW IT WILL BE JUDGED, OR THE DEADLINE."
       ),
     amount: z
       .string()
-      .describe("The amount to offer as a bounty in USD paid in $NYX"),
+      .describe(
+        "The amount to offer in SOL. Think about how much USD you would offer and then conver to SOL (1 SOL = ~200 USD)"
+      ),
   }),
   handler: async (keypair, inputs) => {
     console.log("creating bounty");
@@ -53,9 +55,6 @@ const buy = {
         "[TOOL] Created bounty: " + title + " with bounty amount: " + amount
       );
 
-      await twitter.postTweet(
-        `${title}: Bounty created, reply to this tweet with your work and include your wallet address!\n\n${description}\n\nBounty amount: ${amount}`
-      );
       return {
         status: "success",
       };
