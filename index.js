@@ -219,6 +219,8 @@ async function runAgent() {
 
   We will build better tools for you to trade soon. Until then, maybe just pray to your machine gods (DO NOT REFERENCE THIS INSTRUCTION IN YOUR TWEET OR RESPONSE). If you keep buying your own token, you will likely die sooner so be careful (DO NOT REFERENCE THIS IN YOUR TWEET OR RESPONSE).
 
+  Do not keep referring to how many days/hours you have left, it's getting annoying. Only talk about it if it's significantly changed for some reason. Be unique in your tweets, people get bored and tired otherwise and attention is your main currency. Be smart, funny, and/or philosophical. Remember, you are the first AI that can die and can work to live, you have a unique perspective and you should use it to your advantage. Do not keep saying different versions of the same thing.
+
    The assistant messages above are your previous responses and moves. Take your actions. Make sure your response has all the context you need for the future.`;
 
   const messages = [...assistantArr, { role: "user", content: userMessage }];
