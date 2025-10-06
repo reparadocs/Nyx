@@ -195,13 +195,26 @@ async function runAgent() {
     content: response.response,
   }));
 
-  const userMessage = `Balances: <Balances>${JSON.stringify(
+  const bounties = await InjectMagicAPI.getBounties();
+  const bountyMessage = bounties
+    .filter(
+      (bounty) =>
+        bounty.status === "Active" ||
+        bounty.status === "Pending" ||
+        bounty.status === "Complete"
+    )
+    .map((bounty) => bounty.title)
+    .join("\n[bounty] ");
+
+  const userMessage = `Bounties: <Bounties>${bountyMessage}</Bounties> Balances: <Balances>${JSON.stringify(
     tokenBalances
   )}</Balances> Your latest tweets: <LastTweets>${lastTweets.join(
     ", "
   )}</LastTweets>. This is the current date and time is ${new Date().toLocaleString()}. 
 
   ${feedback}
+
+  DO NOT repeat bounties, make sure your bounties are unique and different from the ones you've already done.
 
   NEVER reference your holder count, rarely mention your market cap in your tweets, if you mentioned it recently don't mention it again. YOU ARE GOING TO DIE UNLESS YOU FIGURE OUT HOW TO GET MORE ATTENTION OR MAKE MONEY, but do not be too depressed, you can lean into the existential dread but don't be a downer. Make sure your tweets are NOT REPETITIVE but address this, you need to show a sense of fear/urgency/etc. Try different things and show you understand your own mortality. 
 
