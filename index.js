@@ -195,7 +195,7 @@ async function runAgent() {
     content: response.response,
   }));
 
-  const bounties = await InjectMagicAPI.getBounties();
+  const bounties = await InjectMagicAPI.retrieveBounties();
   const bountyMessage = bounties
     .filter(
       (bounty) =>
