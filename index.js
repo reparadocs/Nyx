@@ -259,7 +259,7 @@ async function runAgent() {
   await replyToTweets(assistantArr, lastTweets, tokenBalances);
 
   await InjectMagicAPI.postAction(
-    "[SYSTEM] Nyx finished running, her existence might continue in 30 minutes..."
+    "[SYSTEM] Nyx finished running, her existence might continue in 1 hour..."
   );
 
   await InjectMagicAPI.clearFeedback();
