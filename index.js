@@ -121,11 +121,17 @@ async function runAgent() {
   console.log("🚀 Solana AI Agent started!");
   console.log("Current wallet address:", keypair.publicKey.toString());
 
-  const nyxResponses = await InjectMagicAPI.getNyxResponses();
+  const _nyxResponses = await InjectMagicAPI.getNyxResponses();
+
+  const nyxResponses = _nyxResponses.sort(
+    (a, b) => new Date(a.wake) - new Date(b.wake)
+  );
+
   const wakeTime =
     nyxResponses.length > 0
       ? new Date(nyxResponses[nyxResponses.length - 1].wake)
       : Date.now();
+  console.log(wakeTime);
 
   const dateNow = Date.now();
 
