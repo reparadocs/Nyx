@@ -16,6 +16,7 @@ import InjectMagicAPI from "./utils/api.js";
 import SimpleWallet from "./utils/wallet.js";
 import twitter from "./utils/twitter.js";
 import { ChatAnthropic } from "@langchain/anthropic";
+import { HumanMessage } from "@langchain/core/messages";
 
 const env = process.env;
 
@@ -82,6 +83,12 @@ const agent = createReactAgent({
 
 const twitterAgent = createReactAgent({
   llm: anthropicModel,
+  tools: [],
+  prompt: prompt,
+});
+
+const judgingAgent = createReactAgent({
+  llm: anthropicCreativeModel,
   tools: [],
   prompt: prompt,
 });
@@ -215,33 +222,6 @@ async function runAgent() {
 
   const fullBountyMessage = `Active bounty count: ${activeBountyMessage.length} Current active bounties: ${activeBountyMessage} Previous bounties: ${bountyMessage}`;
 
-  const payoutBounties = bounties.filter(
-    (bounty) => bounty.status === "Completed" && bounty.payout
-  );
-
-  console.log(payoutBounties);
-
-  payoutBounties.forEach(async (bounty) => {
-    const shouldPayout = await InjectMagicAPI.payoutBounty(bounty.id);
-    console.log(shouldPayout);
-    if (shouldPayout) {
-      solanaKit.methods.transfer(
-        solanaKit,
-        new PublicKey(bounty.solana_address),
-        bounty.true_amount
-      );
-      await InjectMagicAPI.postAction("[TOOL] Paid out bounty " + bounty.title);
-      await twitter.postTweet(
-        "bounty claimed: " +
-          bounty.title +
-          " for " +
-          bounty.true_amount.toString() +
-          " SOL\n\n" +
-          bounty.winning_submission
-      );
-    }
-  });
-
   const userMessage = `Bounties: <Bounties>${fullBountyMessage}</Bounties> Balances: <Balances>${JSON.stringify(
     tokenBalances
   )}</Balances> Your latest tweets: <LastTweets>${lastTweets.join(
@@ -275,6 +255,8 @@ async function runAgent() {
    The assistant messages above are your previous responses and moves. Take your actions. Make sure your response has all the context you need for the future.`;
 
   const messages = [...assistantArr, { role: "user", content: userMessage }];
+
+  datetime.datetime.fromisoformat(n.wake) - datetime.timedelta((hours = 1));
 
   const result = await anthropicAgent.invoke({
     messages,
@@ -395,6 +377,93 @@ Again, only return up to 5 responses MAXIMUM. Here are your mentions: ${JSON.str
   }
 }
 
+async function judgeBounties() {
+  const bounties = await InjectMagicAPI.retrievePendingBountySubmissions();
+  for (const bounty of bounties) {
+    const submissions = bounty.submissions;
+    if (submissions.length === 0) {
+      continue;
+    }
+
+    const messages = [];
+    const subDict = submissions.reduce((acc, submission) => {
+      acc[submission.id] = submission;
+      return acc;
+    }, {});
+
+    for (const submission of submissions) {
+      console.log(submission);
+      const result = await twitter.getTweetFromLink(submission.submission);
+      const content = [
+        {
+          type: "text",
+          text: "submission ID is " + submission.id + ": " + result.text,
+        },
+      ];
+      if (result.image) {
+        content.push({ type: "image_url", image_url: { url: result.image } });
+      }
+      messages.push(
+        new HumanMessage({
+          content,
+        })
+      );
+    }
+    messages.push({
+      role: "user",
+      content:
+        "Do not use any tools. You are here to judge your offerings for this bounty: " +
+        bounty.title +
+        ". Choose the best submission, or if you hate them all, you can choose none. Your response should be a JSON object with two keys, 'response' and 'choice'. choice is the submission ID of the better submission and response is your reasoning. Only return the JSON object, NOT MARKDOWN. Do NOT mention any submission IDs in your reasoning, you can just describe them. NO IDS IN YOUR RESPONSE EVER! In your reasoning, start with saying the bounty title, the bounty amount: " +
+        bounty.true_amount +
+        " SOL and the fact that you have chosen a winner (or not chosen anyone). If you choose none, 'choice' should be -1",
+    });
+    console.log(messages);
+
+    const reply = await judgingAgent.invoke({ messages });
+    const replyContent = reply.messages[reply.messages.length - 1].content;
+
+    //remove markdown from replyContent
+    const _replyContent = replyContent
+      .replace(/```json/g, "")
+      .replace(/```/g, "");
+    const replyJSON = JSON.parse(_replyContent);
+    const submissionId = replyJSON.choice;
+
+    const response = replyJSON.response;
+    console.log(response);
+    console.log(submissionId);
+    const isPayingOut = submissionId >= 0;
+    const tweetText =
+      response + " " + (isPayingOut ? subDict[submissionId].submission : "");
+    const shouldPayout = await InjectMagicAPI.payoutBounty(
+      bounty.id,
+      isPayingOut ? subDict[submissionId].submission : "Liked None"
+    );
+    console.log(tweetText);
+    console.log(isPayingOut ? subDict[submissionId].solana_address : "None");
+    console.log(bounty.true_amount);
+    if (shouldPayout) {
+      if (isPayingOut) {
+        const wallet = new KeypairWallet(keypair, process.env.RPC_URL);
+
+        const solanaKit = new SolanaAgentKit(
+          wallet,
+          process.env.RPC_URL,
+          {}
+        ).use(TokenPlugin);
+        solanaKit.methods.transfer(
+          solanaKit,
+          new PublicKey(subDict[submissionId].solana_address),
+          bounty.true_amount
+        );
+      }
+      await twitter.postTweet(tweetText);
+      await InjectMagicAPI.postAction("[TOOL] Paid out bounty " + bounty.title);
+    }
+  }
+  return;
+}
 async function testReplyToTweets() {
   const nyxResponses = await InjectMagicAPI.getNyxResponses();
 
@@ -419,6 +488,7 @@ while (result) {
 
     result = await runAgent();
     console.log("Agent run completed successfully");
+    //await judgeBounties();
 
     //await testExecutor();
 

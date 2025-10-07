@@ -133,6 +133,30 @@ class Twitter {
     }
   }
 
+  async getTweetFromLink(tweetLink) {
+    // use regex to get the tweet id from the link, make sure to remove query string
+    const _tweetLink = tweetLink.split("?")[0];
+    const tweetId = _tweetLink.match(/status\/(\d+)/)[1];
+    const tweet = await this.client.v2.singleTweet(tweetId, {
+      expansions: ["author_id", "attachments.media_keys"],
+      "media.fields": "url",
+    });
+    let image_buffer_base64 = null;
+    if (tweet.includes?.media?.length > 0) {
+      const media = tweet.includes.media.find(
+        (media) => media.type === "photo"
+      );
+      const image_url = media.url;
+      const image_buffer = await fetch(image_url);
+      const contentType = image_buffer.headers.get("Content-Type");
+      const image_buffer_array = await image_buffer.arrayBuffer();
+      image_buffer_base64 = Buffer.from(image_buffer_array).toString("base64");
+      // make it a base64 url
+      image_buffer_base64 = `data:${contentType};base64,${image_buffer_base64}`;
+    }
+    return { text: tweet.data.text, image: image_buffer_base64 };
+  }
+
   async postTweetWithMedia(text, pngBuffer) {
     try {
       const twitterMedia = await this.client.v1.uploadMedia(pngBuffer, {

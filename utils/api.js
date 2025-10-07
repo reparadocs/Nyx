@@ -212,12 +212,32 @@ class InjectMagicAPI {
     return arr;
   }
 
-  async payoutBounty(id) {
-    const response = await this.post(`bounties/${id}/`, { payout: false });
+  async payoutBounty(id, submission) {
+    const response = await this.post(`bounties/${id}/`, {
+      payout: false,
+      completed: submission,
+    });
     if (response.status === 200 && response.data.payout === false) {
       return true;
     }
     return false;
+  }
+
+  async retrievePendingBountySubmissions() {
+    const response = await fetch(
+      "https://api.injectmagic.com/sisyphus/pending-bounty-submissions/",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${this.apiKey}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Inject Magic API error: ${response.status}`);
+    }
+    const arr = await response.json();
+    return arr;
   }
 
   async retrieveBounties() {
