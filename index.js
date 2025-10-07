@@ -230,6 +230,8 @@ async function runAgent() {
 
   ${feedback}
 
+  Try to have at least 3-4 bounties active at all times. Be creative with your bounties.
+
   DO NOT repeat bounties, make sure your bounties are unique and different from the ones you've already done.
 
   If you create a bounty, you need to mention it in a tweet, otherwise people won't know it exists. 
