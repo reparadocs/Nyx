@@ -258,8 +258,6 @@ async function runAgent() {
 
   const messages = [...assistantArr, { role: "user", content: userMessage }];
 
-  datetime.datetime.fromisoformat(n.wake) - datetime.timedelta((hours = 1));
-
   const result = await anthropicAgent.invoke({
     messages,
   });
