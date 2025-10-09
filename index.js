@@ -232,6 +232,8 @@ async function runAgent() {
 
   Try to have at least 3-4 bounties active at all times. Be creative with your bounties.
 
+  People want to see you trading, not just creating bounties. Make sure you are occasionally trading and describing why you believe in your trades. You have the web search tool to help you with this.
+
   DO NOT repeat bounties, make sure your bounties are unique and different from the ones you've already done.
 
   If you create a bounty, you need to mention it in a tweet, otherwise people won't know it exists. 
