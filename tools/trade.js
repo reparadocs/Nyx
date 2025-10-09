@@ -136,6 +136,9 @@ const tradeTokens = {
       const executeData = await executeResponse.json();
       console.log(executeData);
       if (executeData.status === "Success") {
+        const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+        // wait 10 seconds
+        await delay(5000);
         const finalSol = await wallet.getBalance();
         // Return the results in the expected format
         actionMessage +=
