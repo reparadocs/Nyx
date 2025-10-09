@@ -400,8 +400,10 @@ async function judgeBounties() {
           text: "submission ID is " + submission.id + ": " + result.text,
         },
       ];
-      if (result.image) {
-        content.push({ type: "image_url", image_url: { url: result.image } });
+      if (result.images.length > 0) {
+        for (const image of result.images) {
+          content.push({ type: "image_url", image_url: { url: image } });
+        }
       }
       messages.push(
         new HumanMessage({

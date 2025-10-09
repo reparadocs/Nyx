@@ -141,20 +141,27 @@ class Twitter {
       expansions: ["author_id", "attachments.media_keys"],
       "media.fields": "url",
     });
-    let image_buffer_base64 = null;
+    let image_buffer_base64 = [];
     if (tweet.includes?.media?.length > 0) {
-      const media = tweet.includes.media.find(
+      const medias = tweet.includes.media.filter(
         (media) => media.type === "photo"
       );
-      const image_url = media.url;
-      const image_buffer = await fetch(image_url);
-      const contentType = image_buffer.headers.get("Content-Type");
-      const image_buffer_array = await image_buffer.arrayBuffer();
-      image_buffer_base64 = Buffer.from(image_buffer_array).toString("base64");
-      // make it a base64 url
-      image_buffer_base64 = `data:${contentType};base64,${image_buffer_base64}`;
+      if (medias.length > 0) {
+        for (const media of medias) {
+          const image_url = media.url;
+          const image_buffer = await fetch(image_url);
+          const contentType = image_buffer.headers.get("Content-Type");
+          const image_buffer_array = await image_buffer.arrayBuffer();
+          const _image_buffer_base64 =
+            Buffer.from(image_buffer_array).toString("base64");
+          // make it a base64 url
+          image_buffer_base64.push(
+            `data:${contentType};base64,${_image_buffer_base64}`
+          );
+        }
+      }
     }
-    return { text: tweet.data.text, image: image_buffer_base64 };
+    return { text: tweet.data.text, images: image_buffer_base64 };
   }
 
   async postTweetWithMedia(text, pngBuffer) {
