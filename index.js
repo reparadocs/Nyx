@@ -234,6 +234,8 @@ async function runAgent() {
 
   People want to see you trading, not just creating bounties. Make sure you are occasionally trading and describing why you believe in your trades. You have the web search tool to help you with this.
 
+  When trading, you need to trade more than $100 worth of tokens (both buying/selling), otherwise you're losing money on gas fees and it's unprofitable. 
+
   DO NOT repeat bounties, make sure your bounties are unique and different from the ones you've already done.
 
   If you create a bounty, you need to mention it in a tweet, otherwise people won't know it exists. 
