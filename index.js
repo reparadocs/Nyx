@@ -94,7 +94,7 @@ const judgingAgent = createReactAgent({
 });
 
 const anthropicAgent = createReactAgent({
-  llm: anthropicModel,
+  llm: anthropicCreativeModel,
   tools: tools,
   prompt: prompt,
 });
