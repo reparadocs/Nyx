@@ -199,7 +199,7 @@ class Twitter {
     try {
       const logs = await InjectMagicAPI.getTwitterLogs();
       const timeline = await this.client.v2.userMentionTimeline(this.userId, {
-        max_results: 20,
+        max_results: 10,
         expansions: ["author_id"],
         "tweet.fields": ["referenced_tweets"],
       });
